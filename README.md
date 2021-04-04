@@ -118,7 +118,7 @@ Organization organization = new Organization(configuration);
 Создадим организацию:
 ```csharp
 Organization organization;
-using (StreamReader file = File.OpenText(yourpath = "example.json")
+using (StreamReader file = File.OpenText(yourpath + "example.json")
 {
 	organization = new Organization(file.ReadToEnd());
 }
