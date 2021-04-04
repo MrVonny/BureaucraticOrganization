@@ -1,5 +1,4 @@
 # BureaucraticOrganization
-[TOC]
 ## Использование
 ### Классы
 #### RuleEvent
@@ -27,7 +26,7 @@ var dep2 = new Department("PhpStorm","D", new RuleEvent("G","A","DataGrid"), new
 
 Пример создания конфигурации:
 
-**Шаг 1.** 
+**Шаг 1**
 Создаём коллекцию отедлов
 ```csharp
 List<Department> departments = new List<Department>()
@@ -39,10 +38,89 @@ List<Department> departments = new List<Department>()
 	new Department("DataGrid", new RuleEvent("K","B","PhpStorm"))
 };
 ```
-**Шаг 2.**
-Устанавливаем **CLion** стартовым отдлом, а **DataGrid** конечным.
+**Шаг 2**
+Устанавливаем **CLion** стартовым отделом, а **DataGrid** конечным.
 ```csharp
-OrganizationConfiguration configuration = new OrganizationConfiguration("CLion","DataGrid",departments);
+var configuration = new OrganizationConfiguration("CLion","DataGrid",departments);
 ```
+#### Organization
+Все предыдущие классы нужны были создания конфигурации организации. Класс `Organization` служит для получения ответов на запрос постановленный в задаче.
 
-
+##### Инициализаия через код
+```csharp
+Organization organization = new Organization(configuration);
+```
+##### Инициализаия через JSON
+Создадим example.json по следующему шаблону:
+```json
+{
+  "departments": [
+    {
+      "rule": {
+        "event": {
+          "putStampId": "A",
+          "crossStampId": "B",
+          "nextDepartmentId": "PyCharm"
+        }
+      },
+      "id": "CLion"
+    },
+    {
+      "rule": {
+        "event": {
+          "putStampId": "C",
+          "crossStampId": "A",
+          "nextDepartmentId": "PhpStorm"
+        }
+      },
+      "id": "PyCharm"
+    },
+    {
+      "rule": {
+        "conditionalStamp": "D",
+        "event1": {
+          "putStampId": "A",
+          "crossStampId": "B",
+          "nextDepartmentId": "DataGrid"
+        },
+        "event2": {
+          "putStampId": "A",
+          "crossStampId": "B",
+          "nextDepartmentId": "Rider"
+        }
+      },
+      "id": "PhpStorm"
+    },
+    {
+      "rule": {
+        "event": {
+          "putStampId": "D",
+          "crossStampId": "B",
+          "nextDepartmentId": "PhpStorm"
+        }
+      },
+      "id": "Rider"
+    },
+    {
+      "rule": {
+        "event": {
+          "putStampId": "D",
+          "crossStampId": "B",
+          "nextDepartmentId": "PhpStorm"
+        }
+      },
+      "id": "DataGrid"
+    }
+  ],
+  "startDepartment": "CLion",
+  "endDepartment": "PhpStorm"
+}
+```
+Создадим организацию:
+```csharp
+Organization organization;
+using (StreamReader file = File.OpenText(yourpath = "example.json")
+{
+	organization = new Organization(file.ReadToEnd());
+}
+```
