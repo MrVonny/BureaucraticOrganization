@@ -1,0 +1,36 @@
+{
+  "departments": [
+    {
+      "rule": {
+        "event": {
+          "putStampId": "A",
+          "crossStampId": "B",
+          "nextDepartmentId": "PyCharm"
+        }
+      },
+      "id": "CLion"
+    },
+    {
+      "rule": {
+        "event": {
+          "putStampId": "C",
+          "crossStampId": "A",
+          "nextDepartmentId": "CLion"
+        }
+      },
+      "id": "PyCharm"
+    },
+    {
+      "rule": {
+        "event": {
+          "putStampId": "C",
+          "crossStampId": "A",
+          "nextDepartmentId": "PhpStorm"
+        }
+      },
+      "id": "VisualStudio"
+    }
+  ],
+  "startDepartment": "CLion",
+  "endDepartment": "VisualStudio"
+}

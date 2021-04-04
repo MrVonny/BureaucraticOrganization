@@ -1,0 +1,37 @@
+{
+  "successful": "true",
+  "snapshots": [
+    {
+      "stamps": [
+        {
+          "id": "A",
+          "state": "Putted"
+        },
+        {
+          "id": "C",
+          "state": "Putted"
+        }
+      ]
+    },
+    {
+      "stamps": [
+        {
+          "id": "A",
+          "state": "Crossed"
+        },
+        {
+          "id": "C",
+          "state": "Putted"
+        },
+        {
+          "id": "D",
+          "state": "Putted"
+        },
+        {
+          "id": "G",
+          "state": "Putted"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "departments": [
+    {
+      "rule": {
+        "event": {
+          "putStampId": "A",
+          "crossStampId": "B",
+          "nextDepartmentId": "PyCharm"
+        }
+      },
+      "id": "CLion"
+    },
+    {
+      "rule": {
+        "event": {
+          "putStampId": "C",
+          "crossStampId": "A",
+          "nextDepartmentId": "PhpStorm"
+        }
+      },
+      "id": "PyCharm"
+    },
+    {
+      "rule": {
+        "conditionalStamp": "D",
+        "event1": {
+          "putStampId": "A",
+          "crossStampId": "B",
+          "nextDepartmentId": "DataGrid"
+        },
+        "event2": {
+          "putStampId": "A",
+          "crossStampId": "B",
+          "nextDepartmentId": "Rider"
+        }
+      },
+      "id": "PhpStorm"
+    },
+    {
+      "rule": {
+        "event": {
+          "putStampId": "D",
+          "crossStampId": "B",
+          "nextDepartmentId": "PhpStorm"
+        }
+      },
+      "id": "Rider"
+    },
+    {
+      "rule": {
+        "event": {
+          "putStampId": "D",
+          "crossStampId": "B",
+          "nextDepartmentId": "PhpStorm"
+        }
+      },
+      "id": "DataGrid"
+    }
+  ],
+  "startDepartment": "CLion",
+  "endDepartment": "PhpStorm"
+}
