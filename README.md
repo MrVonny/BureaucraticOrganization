@@ -135,13 +135,11 @@ BypassResult result = await organization.GetResultAsync("CLion");
 BypassResult result = await organization.GetResultAsync("CLion"),TimeSpan.FromMilliseconds(500));
 if(result.Successful)
 {
-var sheetSnapshots = result.BypassSheetSnapshots;
+	var sheetSnapshots = result.BypassSheetSnapshots;
 	foreach(var snapshot in sheetSnapshots)
 	{
 		foreach(var stamp in snapshot.Stamps)
-		{
 			Console.WriteLine($"Печать {stamp.Id} - {stamp.State}");
-		}
 		Console.WriteLine();
 	}
 }
