@@ -8,8 +8,7 @@ namespace BureaucraticOrganization
     public class BypassResult
     {
         private Exception exception;
-
-        public List<BypassSheetSnapshot> BypassSheetSnapshots { get; } = new List<BypassSheetSnapshot>();
+        public List<BypassSheetSnapshot> BypassSheetSnapshots { get; internal set; } = new List<BypassSheetSnapshot>();
 
         public bool Successful { get; internal set; }
         public bool IsEmpty
@@ -29,6 +28,7 @@ namespace BureaucraticOrganization
                 Successful = false;
             }
         }
+        public bool IsLoop { get; internal set; }
         public string ToJson()
         {
             JObject result;
@@ -45,7 +45,6 @@ namespace BureaucraticOrganization
 
             return result.ToString(Formatting.Indented);
         }
-
 
         internal void AddSnapshot(BypassSheetSnapshot snapshot)
         {

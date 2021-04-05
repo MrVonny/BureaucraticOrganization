@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace BureaucraticOrganization
 {
     public class Organization
     {
-        private OrganizationConfiguration configuration;
+        public OrganizationConfiguration Configuration { get; private set; }
 
         public Organization(OrganizationConfiguration configuration)
         {
@@ -41,7 +42,7 @@ namespace BureaucraticOrganization
                 }
                 else if (jRule.Count == 3)
                 {
-                    string jconditionalStamp = (string)jRule["jconditionalStamp"];
+                    string jconditionalStamp = (string)jRule["conditionalStamp"];
                     JObject jEvent1 = (JObject)jRule["event1"];
                     JObject jEvent2 = (JObject)jRule["event2"];
                     dep = new Department(
@@ -60,32 +61,17 @@ namespace BureaucraticOrganization
             string startDeparment = (string)jConfiguration["startDepartment"];
             string endDepartment = (string)jConfiguration["endDepartment"];
 
-            configuration = new OrganizationConfiguration(startDeparment, endDepartment, departments);
+            Configuration = new OrganizationConfiguration(startDeparment, endDepartment, departments);
         }
         public void Configure(OrganizationConfiguration configuration)
         {
-            this.configuration = configuration;
+            this.Configuration = configuration;
         }
-
         public BypassResult GetResult(string department)
-        {
-            return GetResult(department, TimeSpan.FromSeconds(1));
-        }
-        public BypassResult GetResult(string department, TimeSpan computationTimeLimit)
         {
             try
             {
-                using (var tokenSource = new CancellationTokenSource(computationTimeLimit))
-                {
-                    var task = Task<BypassSheet>.Run(() => Execute(department, tokenSource.Token));
-                    task.Wait();
-                    return task.Result;
-                }
-            }
-            catch (OperationCanceledException ex)
-            {
-                BypassResult result = new BypassResult();
-                result.Exception = ex;
+                var result = Execute(department);
                 return result;
             }
             catch (Exception ex)
@@ -100,42 +86,64 @@ namespace BureaucraticOrganization
         {
             return await Task.Run(() => GetResult(department));
         }
-        public async Task<BypassResult> GetResultAsync(string department, TimeSpan computationTimeLimit)
+        private BypassResult Execute(string department)
         {
-            return await Task.Run(() => GetResult(department, computationTimeLimit));
-        }
-
-
-        private BypassResult Execute(string department, CancellationToken cts)
-        {
-            bool ShouldContuinue(BypassSheet _sheet)
+            bool ShouldContuinue(BypassSheet _sheet, int[] _path, BypassResult _result)
             {
-                lock(_sheet)          
-                    lock (_sheet.Configuration)
-                        return !_sheet.LastDepartment.Equals(configuration.EndDepartment);
+   
+                        if (_sheet.LastDepartment.Equals(Configuration.EndDepartment))
+                        {
+                            return false;
+                        }
+                            
+                if(IsLoop(_path))
+                {
+                    _result.IsLoop = true;
+                    _result.BypassSheetSnapshots = _result.BypassSheetSnapshots.Distinct().ToList();
+                    return false;
+                }
+                return true;
+                
                 
             }
+            Dictionary<string, int> departmetsNumericId = new Dictionary<string, int>();
+            string[] dep = Configuration.Departments.Select(x => x.Id).ToArray();
 
-            BypassSheet sheet = new BypassSheet(configuration.StartDepartment, configuration);
+            for (int i = 0; i < dep.Length; i++)
+                departmetsNumericId.Add(dep[i], i);
+
+            List<int> path = new List<int>();
+
+            BypassSheet sheet = new BypassSheet(Configuration.StartDepartment, Configuration);
             BypassResult result = new BypassResult();
             do
             {
-                if (cts.IsCancellationRequested)
-                {
-                    result.Exception = new OperationCanceledException("Calculation time exceeded");
-                    return result;
-                }
-                lock (sheet)
-                {
                     sheet.CurrentDepartment.ExecuteRule(sheet);
                     if (sheet.LastDepartment.Id.Equals(department))
                         result.AddSnapshot(sheet.MakeSnaphot());
-                }
+                    path.Add(departmetsNumericId[sheet.LastDepartment.Id]);
+                
             }
-            while (ShouldContuinue(sheet));
+            while (ShouldContuinue(sheet, path.ToArray(),result));
 
             result.Successful = true;
             return result;
+        }
+        private static bool IsLoop(int[] path)
+        {
+            int last = path.Length - 1;
+            for (int substringLength = 1; substringLength <= path.Length / 2; substringLength++)
+            {
+                bool isLoop = true;
+                for (int i = 0; i < substringLength; i++)
+                {
+                    if (path[last - i] != path[last - substringLength - i])
+                        isLoop = false;
+                }
+                if (isLoop) return true;
+                
+            }
+            return false;
         }
 
     }
