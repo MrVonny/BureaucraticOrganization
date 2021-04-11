@@ -105,11 +105,6 @@ namespace BureaucraticOrganizationTest
             }
 
         }
-        [Fact]
-        public void FromFile_ShouldReturnCorrectResult()
-        {
-
-        }
 
         [Theory]
         [InlineData("Looping1.json")]

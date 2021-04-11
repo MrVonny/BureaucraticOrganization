@@ -32,16 +32,18 @@ namespace BureaucraticOrganization
         public string ToJson()
         {
             JObject result;
-            if(!Successful)           
+            if (!Successful)
                 result = new JObject(
                     new JProperty("successful", "false"),
-                    new JProperty("exception", Exception.Message));          
+                    new JProperty("exception", Exception.Message));
             else
                 result = new JObject(
                     new JProperty("successful", "true"),
                     !IsEmpty ?
-                    new JProperty("snapshots", JArray.Parse(JsonConvert.SerializeObject(BypassSheetSnapshots))):
-                    new JProperty("message", "The selected department has never been visited"));
+                    new JProperty("snapshots", JArray.Parse(JsonConvert.SerializeObject(BypassSheetSnapshots))) :
+                    new JProperty("message", "The selected department has never been visited"),
+                    new JProperty("isLooping", IsLoop)
+                );
 
             return result.ToString(Formatting.Indented);
         }
