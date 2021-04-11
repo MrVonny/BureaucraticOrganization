@@ -190,13 +190,6 @@ Console.WriteLine(result.ToJson());
   ]
 }
 ```
-Пример ответа при неудаче:
-```json
-{
-  "successful": "false",
-  "exception": "Calculation time exceeded"
-}
-```
 
 
 
