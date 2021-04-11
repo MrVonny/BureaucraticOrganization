@@ -22,7 +22,7 @@ namespace BureaucraticOrganization
         {
             get
             {
-                return Departments.FirstOrDefault(d => d.Id == startDepartmentId);
+                return Departments.Single(d => d.Id == startDepartmentId);
             }
         }
         [JsonProperty("endDepartment")]
@@ -30,7 +30,7 @@ namespace BureaucraticOrganization
         {
             get
             {
-                return Departments.FirstOrDefault(d => d.Id == endDepartmentId);
+                return Departments.Single(d => d.Id == endDepartmentId);
             }
         }
 

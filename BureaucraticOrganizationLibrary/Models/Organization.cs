@@ -58,8 +58,12 @@ namespace BureaucraticOrganization
                 departments.Add(dep);
             }
 
-            string startDeparment = (string)jConfiguration["startDepartment"];
-            string endDepartment = (string)jConfiguration["endDepartment"];
+            string startDeparment = (string)jConfiguration["startDepartment"] ?? throw new ArgumentNullException();
+            string endDepartment = (string)jConfiguration["endDepartment"] ?? throw new ArgumentNullException();
+            if (!departments.Any(dep => dep.Id.Equals(startDeparment)))
+                throw new ArgumentException($"There is no department with this ID: {startDeparment}");
+            if (!departments.Any(dep => dep.Id.Equals(endDepartment)))
+                throw new ArgumentException($"There is no department with this ID: {endDepartment}");
 
             Configuration = new OrganizationConfiguration(startDeparment, endDepartment, departments);
         }
