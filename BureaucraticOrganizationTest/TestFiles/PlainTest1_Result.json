@@ -1,62 +1,37 @@
 {
-  "departments": [
+  "successful": "true",
+  "snapshots": [
     {
-      "rule": {
-        "event": {
-          "putStampId": "A",
-          "crossStampId": "B",
-          "nextDepartmentId": "PyCharm"
-        }
-      },
-      "id": "CLion"
-    },
-    {
-      "rule": {
-        "event": {
-          "putStampId": "C",
-          "crossStampId": "A",
-          "nextDepartmentId": "PhpStorm"
-        }
-      },
-      "id": "PyCharm"
-    },
-    {
-      "rule": {
-        "conditionalStamp": "D",
-        "event1": {
-          "putStampId": "A",
-          "crossStampId": "B",
-          "nextDepartmentId": "DataGrid"
+      "stamps": [
+        {
+          "id": "A",
+          "state": "Putted"
         },
-        "event2": {
-          "putStampId": "A",
-          "crossStampId": "B",
-          "nextDepartmentId": "Rider"
+        {
+          "id": "C",
+          "state": "Putted"
         }
-      },
-      "id": "PhpStorm"
+      ]
     },
     {
-      "rule": {
-        "event": {
-          "putStampId": "D",
-          "crossStampId": "B",
-          "nextDepartmentId": "PhpStorm"
+      "stamps": [
+        {
+          "id": "A",
+          "state": "Crossed"
+        },
+        {
+          "id": "C",
+          "state": "Putted"
+        },
+        {
+          "id": "D",
+          "state": "Putted"
+        },
+        {
+          "id": "G",
+          "state": "Putted"
         }
-      },
-      "id": "Rider"
-    },
-    {
-      "rule": {
-        "event": {
-          "putStampId": "D",
-          "crossStampId": "B",
-          "nextDepartmentId": "PhpStorm"
-        }
-      },
-      "id": "DataGrid"
+      ]
     }
-  ],
-  "startDepartment": "CLion",
-  "endDepartment": "PhpStorm"
+  ]
 }

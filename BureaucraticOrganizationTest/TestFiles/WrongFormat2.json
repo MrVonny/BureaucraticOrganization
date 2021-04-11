@@ -3,15 +3,7 @@
     {
       "rule": {
         "event": {
-          "putStampId": "A",
-          "crossStampId": "B",
-          "nextDepartmentId": "PyCharm"
-        }
-      },
-      "id": "CLion"
-    },
-    {
-      "rule": {
+
         "event": {
           "putStampId": "C",
           "crossStampId": "A",
@@ -41,22 +33,7 @@
         "event": {
           "putStampId": "D",
           "crossStampId": "B",
-          "nextDepartmentId": "PhpStorm"
-        }
-      },
-      "id": "Rider"
-    },
-    {
-      "rule": {
-        "event": {
-          "putStampId": "D",
-          "crossStampId": "B",
-          "nextDepartmentId": "PhpStorm"
-        }
-      },
-      "id": "DataGrid"
-    }
-  ],
+
   "startDepartment": "CLion",
   "endDepartment": "PhpStorm"
 }

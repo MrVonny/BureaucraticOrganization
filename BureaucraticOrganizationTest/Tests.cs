@@ -12,10 +12,10 @@ using System.Diagnostics;
 
 namespace BureaucraticOrganizationTest
 {
-    public class UnitTest1
+    public class Tests
     {
 
-        private static List<Department> plainTest1 = new List<Department>()
+        private static List<Department> plainDeps1 = new List<Department>()
         {
                 new Department("CLion", new RuleEvent("A","B","PyCharm")),
                 new Department("PyCharm", new RuleEvent("C","A","PhpStorm")),
@@ -23,7 +23,7 @@ namespace BureaucraticOrganizationTest
                 new Department("Rider", new RuleEvent("D","B","PhpStorm")),
                 new Department("DataGrid", new RuleEvent("K","B","PhpStorm"))
         };
-        private static List<Department> plainTest2 = new List<Department>()
+        private static List<Department> plainDeps2 = new List<Department>()
         {
                 new Department("CLion", new RuleEvent("A","B","PyCharm")),
                 new Department("PyCharm", new RuleEvent("C","A","PhpStorm")),
@@ -31,7 +31,7 @@ namespace BureaucraticOrganizationTest
                 new Department("Rider", new RuleEvent("D","B","PhpStorm")),
                 new Department("DataGrid", new RuleEvent("K","B","PhpStorm"))
         };
-        private static List<Department> loopingTest1 = new List<Department>()
+        private static List<Department> loopingDeps1 = new List<Department>()
         {
                 new Department("CLion", new RuleEvent("A","B","PyCharm")),
                 new Department("PyCharm", new RuleEvent("C","A","PhpStorm")),
@@ -39,7 +39,7 @@ namespace BureaucraticOrganizationTest
                 new Department("Rider", new RuleEvent("D","B","PhpStorm")),
                 new Department("DataGrid", new RuleEvent("K","B","PhpStorm"))
         };
-        private static List<Department> loopingTest2 = new List<Department>()
+        private static List<Department> loopingDeps2 = new List<Department>()
         {
                 new Department("CLion", new RuleEvent("A","B","PyCharm")),
                 new Department("PyCharm", new RuleEvent("C","A","PhpStorm")),
@@ -47,6 +47,11 @@ namespace BureaucraticOrganizationTest
                 new Department("Rider", new RuleEvent("D","B","PhpStorm")),
                 new Department("DataGrid", new RuleEvent("K","B","PhpStorm"))
         };
+
+        private static OrganizationConfiguration plainConf1 = new OrganizationConfiguration("CLion", "DataGrid", plainDeps1);
+        private static OrganizationConfiguration plainConf2 = new OrganizationConfiguration("", "", plainDeps2);
+        private static OrganizationConfiguration loopingConf1 = new OrganizationConfiguration("", "", loopingDeps1);
+        private static OrganizationConfiguration loopingConf2 = new OrganizationConfiguration("", "", loopingDeps2);
 
 
         [Theory]
@@ -54,12 +59,10 @@ namespace BureaucraticOrganizationTest
         public async void FromCode_ShouldReturnCorrectResult(string filename)
         {
             
-            var configuration = new OrganizationConfiguration("CLion","DataGrid", plainTest1);
-
-            Organization organization = new Organization(configuration);
+            Organization organization = new Organization(plainConf1);
 
             var result = await organization.GetResultAsync("PhpStorm");
-
+            var str = result.ToJson();
             Assert.Null(result.Exception);
             Assert.True(result.Successful);
             using (StreamReader file = File.OpenText(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\TestFiles\", filename)))
@@ -68,9 +71,38 @@ namespace BureaucraticOrganizationTest
             }
         }
 
+        //ToDo: дописать
         [Fact]
-        public void FromFileAndFromCode_ShouldReturnSameResult()
+        public async void FromFileAndFromCode_ShouldReturnSameResult()
         {
+            throw new NotImplementedException();
+            using (StreamReader file = File.OpenText(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\TestFiles\PlainTest1.json")))
+            {
+                var organization1 = new Organization(plainConf1);
+                var organization2 = new Organization(await file.ReadLineAsync());
+                Assert.Equal(await organization1.GetResultAsync("PhpStorm"), await organization2.GetResultAsync("PhpStorm"));
+            }
+
+            using (StreamReader file = File.OpenText(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\TestFiles\PlainTest2.json")))
+            {
+                var organization1 = new Organization(plainConf1);
+                var organization2 = new Organization(await file.ReadLineAsync());
+                Assert.Equal(await organization1.GetResultAsync(""), await organization2.GetResultAsync(""));
+            }
+
+            using (StreamReader file = File.OpenText(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\TestFiles\Looping1.json")))
+            {
+                var organization1 = new Organization(plainConf1);
+                var organization2 = new Organization(await file.ReadLineAsync());
+                Assert.Equal(await organization1.GetResultAsync(""), await organization2.GetResultAsync(""));
+            }
+
+            using (StreamReader file = File.OpenText(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\TestFiles\Looping2.json")))
+            {
+                var organization1 = new Organization(plainConf1);
+                var organization2 = new Organization(await file.ReadLineAsync());
+                Assert.Equal(await organization1.GetResultAsync(""), await organization2.GetResultAsync(""));
+            }
 
         }
         [Fact]
@@ -95,15 +127,22 @@ namespace BureaucraticOrganizationTest
             Assert.True(result.Successful);
             Assert.True(result.IsLoop);
         }
-        [Fact]
-        public void FromFile_WrongFormat_ShouldThrowExecption()
+
+        [Theory]
+        [InlineData("WrongFormat1.json")]
+        [InlineData("WrongFormat2.json")]
+        public void FromFile_WrongFormat_ShouldThrowExecption(string filename)
         {
+            using (StreamReader file = File.OpenText(Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\TestFiles\", filename)))
+            {
+                Assert.ThrowsAny<Exception>(() => new Organization(file.ReadToEnd()));
+            }
 
         }
 
         [Theory]
         [InlineData("PlainTest1.json")]
-        //[InlineData("PlainTest2.json")]
+        [InlineData("PlainTest2.json")]
         public void ConcurrentRequests_ShouldWork(string filename)
         {
             Organization organization;
@@ -114,20 +153,16 @@ namespace BureaucraticOrganizationTest
 
             List<string> requests = organization.Configuration.Departments.Select(x => x.Id).ToList();
 
-            //Создаём более 1 000 000 запросов
-            while(requests.Count<1000000)
+            //Создаём более 100 000 запросов
+            while(requests.Count<1E5)
                 requests.AddRange(requests);
 
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
             Parallel.ForEach(requests, (department) =>
             {
                 var result = organization.GetResult(department);
                 Assert.True(result.Successful);
             });
-            stopwatch.Stop();
 
-            Console.WriteLine($"{requests.Count} запросов обработаны за {stopwatch.ElapsedMilliseconds} мс");
         }
     }
 }

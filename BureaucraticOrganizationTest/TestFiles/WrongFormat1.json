@@ -4,7 +4,7 @@
       "rule": {
         "event": {
           "putStampId": "A",
-          "crossStampId": "B",
+          "dfs": "B",
           "nextDepartmentId": "PyCharm"
         }
       },
@@ -13,7 +13,7 @@
     {
       "rule": {
         "event": {
-          "putStampId": "C",
+          "dfsfd": "C",
           "crossStampId": "A",
           "nextDepartmentId": "PhpStorm"
         }
@@ -25,7 +25,7 @@
         "conditionalStamp": "D",
         "event1": {
           "putStampId": "A",
-          "crossStampId": "B",
+          "dsf": "B",
           "nextDepartmentId": "DataGrid"
         },
         "event2": {
@@ -41,7 +41,7 @@
         "event": {
           "putStampId": "D",
           "crossStampId": "B",
-          "nextDepartmentId": "PhpStorm"
+          "fds": "PhpStorm"
         }
       },
       "id": "Rider"
@@ -57,6 +57,6 @@
       "id": "DataGrid"
     }
   ],
-  "startDepartment": "CLion",
+  "fd": "CLion",
   "endDepartment": "PhpStorm"
 }
