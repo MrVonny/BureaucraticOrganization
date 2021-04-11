@@ -24,6 +24,7 @@ var dep2 = new Department("PhpStorm","D", new RuleEvent("G","A","DataGrid"), new
 - Список всех отделов
 
 Пример создания конфигурации:
+
 **Шаг 1**
 Создаём коллекцию отедлов
 ```csharp
@@ -128,11 +129,9 @@ organization.Configure(anotherConfiguration);
 organization.Configure(jsonConfiguration);
 ```
 # Использование
-После задания конфигурации, можно послать запрос вида **"какие ~~незачеркнутые~~ (в том числе - зачеркнутые) печати есть в обходном листе Васи, когда он в ходе путешествия выходит из отдела Q"**. Для избежания зацикливания, можно задать максимальное время вычисления (по умолчанию - 1 секунда). Метод GetResult возвращает BypassResult, который хранит все состояния обходного листа (снапшоты), когда Вася выходил из отдела Q, или сообщение об ошибке.
+После задания конфигурации, можно послать запрос вида **"какие ~~незачеркнутые~~ (в том числе - зачеркнутые) печати есть в обходном листе Васи, когда он в ходе путешествия выходит из отдела Q"**. Метод GetResult возвращает BypassResult, который хранит все состояния обходного листа (снапшоты), когда Вася выходил из отдела Q, или сообщение об ошибке.
 ```csharp
 BypassResult result = await organization.GetResultAsync("CLion");
-//C заданием максимального времени вычисления
-BypassResult result = await organization.GetResultAsync("CLion"),TimeSpan.FromMilliseconds(500));
 if(result.Successful)
 {
 	var sheetSnapshots = result.BypassSheetSnapshots;
@@ -187,14 +186,8 @@ Console.WriteLine(result.ToJson());
         }
       ]
     }
-  ]
-}
-```
-Пример ответа при неудаче:
-```json
-{
-  "successful": "false",
-  "exception": "Calculation time exceeded"
+  ],
+  "isLooping": false
 }
 ```
 
